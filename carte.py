@@ -91,10 +91,11 @@ class Carte:
             self.bouger_n_pas(action)
         elif action in ["q", "Q"]:
             self.quitter_partie = True
-            self.sauvegarder_carte()
             print("Vous allez quitter la partie.\n Partie sauvegardée.")
         else:
             print("Action inconnue.")
+
+        self.sauvegarder_carte()
 
     def sauvegarder_carte(self):
         with open("save", "wb") as f:

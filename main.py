@@ -1,6 +1,25 @@
 import os
+import pickle
 
 from carte import Carte
+
+
+def lancer_partie(carte_actuelle):
+    while not carte_actuelle.quitter_partie:
+        carte_actuelle.afficher_carte()
+        if carte_actuelle.grille[tuple(carte_actuelle.position_robot)] == "U":
+            print("Félicitations ! Vous avez gagné.")
+            break
+        action = input("Action:")
+        carte_actuelle.traiter_action(action)
+
+
+def charger_sauvegarde():
+    with open("save", "rb") as f:
+        unpickler = pickle.Unpickler(f)
+        carte_chargee = unpickler.load()
+    carte_chargee.quitter_partie = False
+    return carte_chargee
 
 
 def lire_carte(nom_carte):
@@ -47,16 +66,15 @@ if __name__ == "__main__":
             nom_carte_choisie = choisir_carte()
             carte_base_txt = lire_carte(nom_carte_choisie)
             carte_actuelle = Carte(carte_base_txt)
-            while not carte_actuelle.quitter_partie:
-                carte_actuelle.afficher_carte()
-                if carte_actuelle.grille[tuple(carte_actuelle.position_robot)] == "U":
-                    print("Félicitations ! Vous avez gagné.")
-                    break
-                action = input("Action:")
-                carte_actuelle.traiter_action(action)
+            lancer_partie(carte_actuelle)
             break
         elif choix == 2:
-            print("\nContinuer u1ne partie existante")
-            break
+            print("\nContinuer une partie existante")
+            if os.path.exists("save"):
+                carte_actuelle = charger_sauvegarde()
+                lancer_partie(carte_actuelle)
+                break
+            else:
+                print("Il n'y'a aucune partie sauvegardée.")
         else:
             print("\nVeuillez choisir 1 ou 2")

@@ -1,4 +1,18 @@
 import copy
+import pickle
+
+
+def calculer_n_pas(action):
+    if len(action) != 1:
+        try:
+            n_pas = int(action[1:])
+            assert n_pas >= 0
+            return n_pas
+        except (ValueError, AssertionError):
+            print("Il faut que le nombre de pas soit un entier positif.")
+        return 0
+    else:
+        return 1
 
 
 class Carte:
@@ -44,25 +58,45 @@ class Carte:
 
         print(grille_actuelle_txt)
 
-    def traiter_action(self, action):
-        # TODO: checker les obstacles, etc
-        # TODO: gérer les déplacements multiples
-        # TODO: sauvegarder avant de quitter
+    def bouger_un_pas(self, direction):
         new_position = copy.deepcopy(self.position_robot)
-        if action in ["n", "N"]:
+        if direction == "n":
             new_position[0] -= 1
-        elif action in ["s", "S"]:
+        elif direction == "s":
             new_position[0] += 1
-        elif action in ["e", "E"]:
+        elif direction == "e":
             new_position[1] += 1
-        elif action in ["o", "O"]:
+        elif direction == "o":
             new_position[1] -= 1
+
+        if self.grille[tuple(new_position)] != "O":
+            self.position_robot = new_position
+            if self.grille[tuple(self.position_robot)] == "U":
+                return True  # Le chemin s'arrête si le robot est sur la porte
+            return False
+        else:
+            print("Il y'a un mur sur le chemin")
+            return True  # Le chemin s'arrête si on rencontre un mur
+
+    def bouger_n_pas(self, action):
+        direction = action[0].lower()
+        n_pas = calculer_n_pas(action)
+        for i in range(n_pas):
+            stop = self.bouger_un_pas(direction)
+            if stop:
+                break
+
+    def traiter_action(self, action):
+        if action.startswith(("n", "N", "s", "S", "e", "E", "o", "O")):
+            self.bouger_n_pas(action)
         elif action in ["q", "Q"]:
             self.quitter_partie = True
+            self.sauvegarder_carte()
+            print("Vous allez quitter la partie.\n Partie sauvegardée.")
+        else:
+            print("Action inconnue.")
 
-        if (
-            new_position != self.position_robot
-            and self.grille[tuple(new_position)] != "O"
-        ):
-            self.position_robot = new_position
-            
+    def sauvegarder_carte(self):
+        with open("save", "wb") as f:
+            pickler = pickle.Pickler(f)
+            pickler.dump(self)

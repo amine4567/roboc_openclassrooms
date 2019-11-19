@@ -1,3 +1,6 @@
+import copy
+
+
 class Carte:
     def __init__(self, carte_txt):
         self.grille = {}
@@ -45,13 +48,21 @@ class Carte:
         # TODO: checker les obstacles, etc
         # TODO: gérer les déplacements multiples
         # TODO: sauvegarder avant de quitter
-        if action == "n":
-            self.position_robot[0] -= 1
-        elif action == "s":
-            self.position_robot[0] += 1
-        elif action == "e":
-            self.position_robot[1] += 1
-        elif action == "o":
-            self.position_robot[1] -= 1
-        elif action == "q":
+        new_position = copy.deepcopy(self.position_robot)
+        if action in ["n", "N"]:
+            new_position[0] -= 1
+        elif action in ["s", "S"]:
+            new_position[0] += 1
+        elif action in ["e", "E"]:
+            new_position[1] += 1
+        elif action in ["o", "O"]:
+            new_position[1] -= 1
+        elif action in ["q", "Q"]:
             self.quitter_partie = True
+
+        if (
+            new_position != self.position_robot
+            and self.grille[tuple(new_position)] != "O"
+        ):
+            self.position_robot = new_position
+            

@@ -49,6 +49,9 @@ if __name__ == "__main__":
             carte_actuelle = Carte(carte_base_txt)
             while not carte_actuelle.quitter_partie:
                 carte_actuelle.afficher_carte()
+                if carte_actuelle.grille[tuple(carte_actuelle.position_robot)] == "U":
+                    print("Félicitations ! Vous avez gagné.")
+                    break
                 action = input("Action:")
                 carte_actuelle.traiter_action(action)
             break

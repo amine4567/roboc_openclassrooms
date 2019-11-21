@@ -6,7 +6,7 @@ from carte import Carte
 
 class Partie:
     """
-    Classe qui correspond à une carte, elle contient un ensemble de méthodes
+    Classe qui correspond à une partie, elle contient un ensemble de méthodes
     qui permettent de gérer une partie.
     Attributs:
     *nom_fichier_carte: nom du fichier txt carte à charger.

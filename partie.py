@@ -15,7 +15,7 @@ class Partie:
 
     def __init__(self):
         self.nom_fichier_carte = ""
-        self.carte = None
+        self.carte = Carte()
 
     def choisir_carte(self):
         """
@@ -49,7 +49,7 @@ class Partie:
         chemin = os.path.join("cartes", self.nom_fichier_carte + "txt")
         with open(chemin, "r") as fichier:
             carte_str = fichier.read()
-        self.carte = Carte(carte_str)
+        self.carte.charger_txt_en_carte(carte_str)
 
     def charger_sauvegarde(self):
         """
